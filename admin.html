@@ -1,52 +1,143 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090b12"><title>STPI｜开发商管理中心</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>STPI 开发商管理后台</title>
 <style>
-:root{color-scheme:dark;--bg:#090b12;--panel:#141c2b;--line:#2a354b;--muted:#a2aec2;--cyan:#70e7f5;--violet:#a99aff;--red:#ff9ca7}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% 0,#1a3152,transparent 38%),radial-gradient(ellipse at 90% 10%,#30204e,transparent 35%),var(--bg);color:#f5f7ff;font:14px/1.6 system-ui,sans-serif}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid #ffffff20}.brand{font-weight:900;letter-spacing:.16em;font-size:19px}.brand span{color:var(--cyan)}.muted{color:var(--muted)}.panel{background:linear-gradient(145deg,#161e30,#101520);border:1px solid #ffffff1a;border-radius:18px;padding:20px;margin:18px 0}.login{max-width:430px;margin:9vh auto}.field{display:block;margin:12px 0}.field input,.field textarea,.field select{display:block;width:100%;padding:12px;margin-top:6px;border:1px solid var(--line);border-radius:10px;background:#090e18;color:white;font:inherit}.btn{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:#ffffff0b;color:white;font-weight:650;cursor:pointer}.btn.primary{background:linear-gradient(110deg,var(--cyan),var(--violet));color:#07111b;border:0}.btn.danger{border-color:#7b3945;color:#ffb0b8}.btn:disabled{opacity:.5}.topline{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.notice{background:#70e7f510;border:1px solid #70e7f544;border-radius:12px;padding:12px;color:#c6eaf2;margin:12px 0}.error{color:var(--red)}.success{color:#8de6b8}.hidden{display:none!important}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:#ffffff09;border-radius:12px;padding:12px}.stat b{display:block;font-size:23px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{text-align:left;padding:12px 9px;border-bottom:1px solid #ffffff15;vertical-align:top;white-space:pre-line}th{color:var(--muted);font-size:12px}.pill{display:inline-block;padding:3px 8px;border-radius:99px;background:#ffffff12;font-size:12px}.actions{display:flex;gap:7px;flex-wrap:wrap}.small{font-size:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.panel{padding:15px}}
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141c30;--line:#293653;--text:#edf3ff;--muted:#9eacc7;--blue:#76a9ff;--red:#ff8e8e;--green:#72d6ae}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#1b2d50 0,transparent 38%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:32px auto;padding:16px}.panel{background:rgba(20,28,48,.96);border:1px solid var(--line);border-radius:18px;padding:22px;margin:14px 0;box-shadow:0 16px 45px #0004}
+h1{font-size:25px;margin:0 0 6px}h2{font-size:18px;margin:0 0 14px}.muted{color:var(--muted);line-height:1.6}label{display:block;margin:12px 0 6px;color:var(--muted)}
+input{width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#0b1325;color:var(--text);font-size:16px}
+button{border:0;border-radius:10px;padding:12px 16px;background:var(--blue);color:#081326;font-weight:700;font-size:15px;margin:12px 8px 0 0}
+button.secondary{background:#293653;color:var(--text)}button.danger{background:#ffb2a8;color:#35100d}button:disabled{opacity:.45}
+.hidden{display:none}.status{white-space:pre-wrap;margin-top:12px;color:var(--muted)}.order{border:1px solid var(--line);border-radius:12px;padding:15px;margin:10px 0}
+.tag{display:inline-block;padding:4px 9px;border-radius:20px;background:#263958;color:#cfe0ff;font-size:12px;margin-left:7px}
+.warning{border-left:3px solid #ffbd69;padding:10px 12px;background:#352918;color:#ffe0ad;border-radius:7px;line-height:1.6}
+.secret{word-break:break-all;background:#07101f;border:1px dashed var(--green);padding:14px;border-radius:10px;color:#a6f3d0;font-family:monospace}
+small{color:var(--muted)}
 </style>
 </head>
 <body>
-<header class="wrap"><div class="brand"><span>STPI</span> · DEVELOPER CONSOLE</div><div id="userbar" class="hidden"><span id="who" class="muted small"></span> <button id="logout" class="btn">退出登录</button></div></header>
-<main class="wrap">
-<section id="login" class="panel login"><div class="muted small">SECURE ADMINISTRATOR ACCESS</div><h1>开发商管理中心</h1><p class="muted">使用已授权的 STPI 管理员邮箱登录。服务端会再次验证管理员权限。</p><form id="loginForm"><label class="field">管理员邮箱<input id="email" type="email" autocomplete="username" required></label><label class="field">密码<input id="password" type="password" autocomplete="current-password" required></label><button id="loginBtn" class="btn primary">安全登录</button></form><p id="loginMsg" class="small muted" role="status"></p><p class="small muted">不要在公共设备登录，也不要分享密码或会话令牌。</p></section>
-<section id="app" class="hidden">
-<div class="topline"><div><div class="muted small">STPI MANAGEMENT</div><h1 style="margin:4px 0">订单与库存管理</h1></div><button id="refresh" class="btn primary">刷新订单</button></div>
-<div class="notice">付款审核：必须先在商户收款账户/账单中核实实际到账、金额和订单对应关系。页面不会自动确认付款或自动发卡。审批会触发交付，请谨慎操作。</div>
-<div class="stats"><div class="stat"><span class="muted small">订单总数（最近200笔）</span><b id="total">—</b></div><div class="stat"><span class="muted small">待审核</span><b id="pending">—</b></div><div class="stat"><span class="muted small">已付款</span><b id="paid">—</b></div><div class="stat"><span class="muted small">已拒绝</span><b id="rejected">—</b></div></div>
-<section class="panel"><div class="topline"><h2 style="margin:0">订单列表</h2><span class="muted small">最多显示最近 200 笔</span></div><div class="tablewrap"><table><thead><tr><th>订单信息</th><th>付款方式</th><th>付款凭证</th><th>状态</th><th>交付</th><th>管理操作</th></tr></thead><tbody id="orders"><tr><td colspan="6" class="muted">登录后加载订单</td></tr></tbody></table></div><p id="listMsg" class="small muted"></p></section>
-<section class="panel"><h2 style="margin-top:0">卡密库存导入</h2><p class="muted small">每行一个卡密；仅支持字母、数字、下划线和连字符，8–64 位。重复卡密会被拒绝。</p><div class="grid2"><label class="field">产品<select id="product"><option>DAY</option><option>WEEK</option><option>MONTH</option><option>INTERNAL</option><option>CUSTOM</option></select></label><label class="field">卡密列表<textarea id="cards" rows="5" placeholder="每行一个卡密"></textarea></label></div><button id="addCards" class="btn">导入库存</button><p id="inventoryMsg" class="small muted"></p></section>
-</section></main>
+<main>
+  <section class="panel">
+    <h1>STPI 开发商管理后台</h1>
+    <div class="muted">订单审核 · 库存管理 · 访问凭证恢复</div>
+  </section>
+  <section class="panel" id="loginPanel">
+    <h2>管理员登录</h2>
+    <label>管理员邮箱</label><input id="email" type="email" autocomplete="username">
+    <label>密码</label><input id="password" type="password" autocomplete="current-password">
+    <button id="loginBtn">登录</button>
+    <div class="status" id="loginStatus"></div>
+  </section>
+  <section class="panel hidden" id="adminPanel">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+      <div><h2>订单管理</h2><small id="who"></small></div>
+      <button class="secondary" id="logoutBtn">退出登录</button>
+    </div>
+    <button id="refreshBtn">刷新订单</button>
+    <div class="status" id="ordersStatus"></div>
+    <div id="orders"></div>
+  </section>
+  <section class="panel hidden" id="recoveryPanel">
+    <h2>订单访问凭证恢复</h2>
+    <div class="warning">仅针对指定的 ¥5 微信订单。此操作会立即使旧访问凭证失效；新凭证只显示一次。请先确认商户后台已实际入账。此功能不会审批订单或发卡。</div>
+    <p id="selectedOrder" class="muted"></p>
+    <button class="danger" id="resetBtn">生成新访问凭证</button>
+    <div id="resetStatus" class="status"></div>
+    <div id="secretWrap" class="hidden">
+      <p><strong>新访问凭证（仅显示本次）</strong></p>
+      <div class="secret" id="secretValue"></div>
+      <button class="secondary" id="copyBtn">复制凭证</button>
+      <p class="muted">请立即保存到安全位置。关闭或刷新页面后，后台不会再次显示这串凭证。</p>
+    </div>
+  </section>
+</main>
 <script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.99.0/+esm';
-const URL='https://moortluitlpcuhqzfqky.supabase.co';
-const KEY='sb_publishable_DyV6nf8RVv-d-XllYdt0LQ_uJG87R_L';
-const API=URL+'/functions/v1/stpi-payment-portal';
-const sb=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-const $=id=>document.getElementById(id);let session=null,orders=[];
-function msg(id,s,c='muted'){$(id).textContent=s;$(id).className='small '+c}
-async function api(payload){if(!session?.access_token)throw Error('登录会话失效，请重新登录');const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify(payload)});const d=await r.json().catch(()=>({error:'服务器响应异常'}));if(!r.ok||d.error)throw Error(d.error||'请求失败');return d}
-function label(s){return ({pending:'待付款',under_review:'待审核',paid:'已付款',rejected:'已拒绝',cancelled:'已取消'})[s]||String(s||'—')}
-async function enter(s){session=s;const {data,error}=await sb.auth.getUser(s.access_token);if(error||!data.user)throw Error('无法验证登录身份');if(!['developer_admin','admin'].includes(data.user.app_metadata?.role)){await sb.auth.signOut();throw Error('此账号没有开发商管理员权限')} $('login').classList.add('hidden');$('app').classList.remove('hidden');$('userbar').classList.remove('hidden');$('who').textContent=data.user.email||'管理员';await load()}
-async function load(){msg('listMsg','正在读取订单…');try{orders=(await api({action:'admin-list-orders'})).orders||[];render();$('total').textContent=orders.length;$('pending').textContent=orders.filter(x=>x.status==='under_review').length;$('paid').textContent=orders.filter(x=>x.status==='paid').length;$('rejected').textContent=orders.filter(x=>x.status==='rejected').length;msg('listMsg','更新于 '+new Date().toLocaleTimeString('zh-CN'),'success')}catch(e){msg('listMsg',e.message,'error')}}
-function render(){const root=$('orders');root.replaceChildren();if(!orders.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=6;td.textContent='暂无订单';tr.append(td);root.append(tr);return}
-for(const o of orders){const tr=document.createElement('tr'),cells=[];
-const info=document.createElement('td');info.textContent=[o.order_no,o.product_code+' · ¥'+o.amount+' '+(o.currency||''),o.created_at?new Date(o.created_at).toLocaleString('zh-CN'):''].join('\\n');
-const pay=document.createElement('td');pay.textContent=(o.payment_method||'—')+'\\n'+(o.payment_network||'—');
-const proof=document.createElement('td');const ref=o.payer_reference||o.payment_txid||'';proof.textContent=ref?(ref.length>18?ref.slice(0,7)+'…'+ref.slice(-6):ref):'未提交';proof.title=ref?'付款引用已提交':'未提交';
-const st=document.createElement('td'),pill=document.createElement('span');pill.className='pill';pill.textContent=label(o.status);st.append(pill);
-const del=document.createElement('td');del.textContent=(o.delivery_status||'—')+(o.card_code?'\\n卡密已生成':'');
-const act=document.createElement('td'),group=document.createElement('div');group.className='actions';
-if(o.status==='under_review'){const a=document.createElement('button');a.className='btn primary';a.textContent='核验到账后审批';a.onclick=()=>review(o,'approve');const b=document.createElement('button');b.className='btn danger';b.textContent='拒绝';b.onclick=()=>review(o,'reject');group.append(a,b)}
-if(o.status==='paid'&&o.delivery_status!=='delivered'){const b=document.createElement('button');b.className='btn';b.textContent='重试交付';b.onclick=()=>retry(o);group.append(b)}
-if(!group.children.length)group.textContent='无可用操作';act.append(group);tr.append(info,pay,proof,st,del,act);root.append(tr)}}
-async function review(o,decision){const approve=decision==='approve';if(!confirm(approve?'请先确认商户账单已实际收到该订单足额款项。审批将触发卡密交付。\\n\\n确定继续？':'确定拒绝该订单？'))return;const note=prompt('审核备注（可留空）','');if(note===null)return;try{await api({action:'review-order',order_no:o.order_no,decision,review_note:note});alert(approve?'审批完成，请刷新核对交付状态。':'订单已拒绝。');await load()}catch(e){alert('操作失败：'+e.message)}}
-async function retry(o){if(!confirm('确认重试交付？这不会再次确认付款。'))return;try{await api({action:'retry-fulfillment',order_no:o.order_no});alert('已提交交付重试。');await load()}catch(e){alert('重试失败：'+e.message)}}
-$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginBtn').disabled=true;msg('loginMsg','正在验证…');try{const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;await enter(data.session);$('password').value='';msg('loginMsg','登录成功','success')}catch(e){msg('loginMsg',e.message||'登录失败','error')}finally{$('loginBtn').disabled=false}};
-$('refresh').onclick=load;
-$('logout').onclick=async()=>{await sb.auth.signOut();session=null;orders=[];$('app').classList.add('hidden');$('userbar').classList.add('hidden');$('login').classList.remove('hidden');msg('loginMsg','已退出登录','success')};
-$('addCards').onclick=async()=>{const cards=$('cards').value.split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean);if(!cards.length)return msg('inventoryMsg','请先填写卡密','error');if(!confirm('确认导入 '+cards.length+' 个 '+$('product').value+' 卡密？'))return;$('addCards').disabled=true;try{const d=await api({action:'add-inventory',product_code:$('product').value,cards});$('cards').value='';msg('inventoryMsg','成功导入 '+d.inserted+' 个卡密','success')}catch(e){msg('inventoryMsg',e.message,'error')}finally{$('addCards').disabled=false}};
-try{const {data}=await sb.auth.getSession();if(data.session)await enter(data.session)}catch(e){msg('loginMsg',e.message,'error')}
-</script></body></html>
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.99.0/+esm";
+const SUPABASE_URL="https://moortluitlpcuhqzfqky.supabase.co";
+const PUBLISHABLE_KEY="sb_publishable_DyV6nf8RVv-d-XllYdt0LQ_uJG87R_L";
+const FUNCTION_URL=SUPABASE_URL+"/functions/v1/stpi-payment-portal";
+const TARGET_ORDER="STPI-20261105-D1A684EB73";
+const sb=createClient(SUPABASE_URL,PUBLISHABLE_KEY);
+const $=id=>document.getElementById(id);
+let session=null;
+function status(id,msg){$(id).textContent=msg}
+async function api(action,extra={}){
+  const {data:{session:current}}=await sb.auth.getSession();
+  if(!current) throw new Error("登录状态已失效，请重新登录");
+  const response=await fetch(FUNCTION_URL,{method:"POST",headers:{
+    "Content-Type":"application/json","apikey":PUBLISHABLE_KEY,
+    "Authorization":"Bearer "+current.access_token
+  },body:JSON.stringify({action,...extra})});
+  const result=await response.json();
+  if(!response.ok||!result.ok) throw new Error(result.error||"请求失败");
+  return result;
+}
+async function showAdmin(user){
+  const role=user?.app_metadata?.role;
+  if(!["developer_admin","admin"].includes(role)){
+    await sb.auth.signOut(); throw new Error("当前账号没有开发商管理员权限");
+  }
+  session=true;$("loginPanel").classList.add("hidden");$("adminPanel").classList.remove("hidden");
+  $("who").textContent="管理员权限已验证："+role;
+  await loadOrders();
+}
+async function loadOrders(){
+  status("ordersStatus","正在读取订单…");
+  try{
+    const data=await api("admin-list-orders");
+    const target=data.orders.find(o=>o.order_no===TARGET_ORDER);
+    $("orders").innerHTML="";
+    if(!data.orders.length){status("ordersStatus","暂无订单");return}
+    data.orders.forEach(o=>{
+      const el=document.createElement("div");el.className="order";
+      const title=document.createElement("strong");title.textContent=o.order_no;
+      const tag=document.createElement("span");tag.className="tag";tag.textContent=o.status;
+      const info=document.createElement("p");info.className="muted";
+      info.textContent=`产品：${o.product_code} · 金额：${o.currency} ${o.amount} · 支付：${o.payment_method} / ${o.payment_network} · 交付：${o.delivery_status}`;
+      el.append(title,tag,info);$("orders").append(el);
+    });
+    status("ordersStatus",`已加载 ${data.orders.length} 笔订单`);
+    if(target){
+      $("recoveryPanel").classList.remove("hidden");
+      $("selectedOrder").textContent=`目标订单：${target.order_no}｜${target.currency} ${target.amount}｜${target.payment_network}｜状态：${target.status}`;
+      $("resetBtn").disabled=!(target.status==="under_review"&&target.payment_method==="wechat"&&Number(target.amount)===5&&target.currency==="CNY"&&target.delivery_status==="not_ready");
+      if($("resetBtn").disabled)status("resetStatus","当前订单状态不符合凭证恢复条件，按钮已禁用。");
+    }else{
+      $("recoveryPanel").classList.add("hidden");
+      status("ordersStatus","订单列表中暂未找到指定订单。");
+    }
+  }catch(e){status("ordersStatus",e.message)}
+}
+$("loginBtn").onclick=async()=>{
+  status("loginStatus","正在登录…");
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+    if(error)throw error;await showAdmin(data.user);
+  }catch(e){status("loginStatus",e.message)}
+};
+$("refreshBtn").onclick=loadOrders;
+$("logoutBtn").onclick=async()=>{await sb.auth.signOut();location.reload()};
+$("resetBtn").onclick=async()=>{
+  if(!confirm("确认重置该订单的访问凭证？旧凭证会立即失效，新凭证只显示一次。此操作不会审批或发卡。"))return;
+  $("resetBtn").disabled=true;$("secretWrap").classList.add("hidden");status("resetStatus","正在执行安全重置…");
+  try{
+    const result=await api("reset-guest-access",{order_no:TARGET_ORDER});
+    $("secretValue").textContent=result.access_token;
+    $("secretWrap").classList.remove("hidden");
+    status("resetStatus","重置成功。请立即复制并保存新凭证；不要将其发送给他人。");
+    await loadOrders();
+  }catch(e){status("resetStatus",e.message);$("resetBtn").disabled=false}
+};
+$("copyBtn").onclick=async()=>{
+  try{await navigator.clipboard.writeText($("secretValue").textContent);status("resetStatus","已复制。请妥善保存。")}
+  catch{status("resetStatus","自动复制失败，请长按凭证文本手动复制。")}
+};
+const {data:{session:existing}}=await sb.auth.getSession();
+if(existing){try{const {data:{user},error}=await sb.auth.getUser(existing.access_token);if(error)throw error;await showAdmin(user)}catch(e){status("loginStatus",e.message)}}
+</script>
+</body>
+</html>
