@@ -1,143 +1,93 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STPI 开发商管理后台</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>STPI 开发商订单审核后台</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#141c30;--line:#293653;--text:#edf3ff;--muted:#9eacc7;--blue:#76a9ff;--red:#ff8e8e;--green:#72d6ae}
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141c30;--line:#293653;--text:#edf3ff;--muted:#9eacc7;--blue:#76a9ff;--red:#ffb2a8;--green:#72d6ae;--amber:#ffcf83}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#1b2d50 0,transparent 38%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:900px;margin:32px auto;padding:16px}.panel{background:rgba(20,28,48,.96);border:1px solid var(--line);border-radius:18px;padding:22px;margin:14px 0;box-shadow:0 16px 45px #0004}
-h1{font-size:25px;margin:0 0 6px}h2{font-size:18px;margin:0 0 14px}.muted{color:var(--muted);line-height:1.6}label{display:block;margin:12px 0 6px;color:var(--muted)}
-input{width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#0b1325;color:var(--text);font-size:16px}
-button{border:0;border-radius:10px;padding:12px 16px;background:var(--blue);color:#081326;font-weight:700;font-size:15px;margin:12px 8px 0 0}
-button.secondary{background:#293653;color:var(--text)}button.danger{background:#ffb2a8;color:#35100d}button:disabled{opacity:.45}
+main{max-width:960px;margin:24px auto;padding:14px}.panel{background:#141c30;border:1px solid var(--line);border-radius:18px;padding:20px;margin:14px 0}
+h1{font-size:24px;margin:0 0 6px}h2{font-size:18px;margin:0 0 14px}.muted{color:var(--muted);line-height:1.6}label{display:block;margin:12px 0 6px;color:var(--muted)}
+input,textarea{width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#0b1325;color:var(--text);font-size:15px}textarea{min-height:82px}
+button{border:0;border-radius:10px;padding:12px 16px;background:var(--blue);color:#081326;font-weight:700;margin:10px 8px 0 0}button.secondary{background:#293653;color:var(--text)}button.danger{background:var(--red)}button:disabled{opacity:.4}
 .hidden{display:none}.status{white-space:pre-wrap;margin-top:12px;color:var(--muted)}.order{border:1px solid var(--line);border-radius:12px;padding:15px;margin:10px 0}
 .tag{display:inline-block;padding:4px 9px;border-radius:20px;background:#263958;color:#cfe0ff;font-size:12px;margin-left:7px}
-.warning{border-left:3px solid #ffbd69;padding:10px 12px;background:#352918;color:#ffe0ad;border-radius:7px;line-height:1.6}
-.secret{word-break:break-all;background:#07101f;border:1px dashed var(--green);padding:14px;border-radius:10px;color:#a6f3d0;font-family:monospace}
-small{color:var(--muted)}
-</style>
-</head>
-<body>
-<main>
-  <section class="panel">
-    <h1>STPI 开发商管理后台</h1>
-    <div class="muted">订单审核 · 库存管理 · 访问凭证恢复</div>
-  </section>
-  <section class="panel" id="loginPanel">
-    <h2>管理员登录</h2>
-    <label>管理员邮箱</label><input id="email" type="email" autocomplete="username">
-    <label>密码</label><input id="password" type="password" autocomplete="current-password">
-    <button id="loginBtn">登录</button>
-    <div class="status" id="loginStatus"></div>
-  </section>
-  <section class="panel hidden" id="adminPanel">
-    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
-      <div><h2>订单管理</h2><small id="who"></small></div>
-      <button class="secondary" id="logoutBtn">退出登录</button>
-    </div>
-    <button id="refreshBtn">刷新订单</button>
-    <div class="status" id="ordersStatus"></div>
-    <div id="orders"></div>
-  </section>
-  <section class="panel hidden" id="recoveryPanel">
-    <h2>订单访问凭证恢复</h2>
-    <div class="warning">仅针对指定的 ¥5 微信订单。此操作会立即使旧访问凭证失效；新凭证只显示一次。请先确认商户后台已实际入账。此功能不会审批订单或发卡。</div>
-    <p id="selectedOrder" class="muted"></p>
-    <button class="danger" id="resetBtn">生成新访问凭证</button>
-    <div id="resetStatus" class="status"></div>
-    <div id="secretWrap" class="hidden">
-      <p><strong>新访问凭证（仅显示本次）</strong></p>
-      <div class="secret" id="secretValue"></div>
-      <button class="secondary" id="copyBtn">复制凭证</button>
-      <p class="muted">请立即保存到安全位置。关闭或刷新页面后，后台不会再次显示这串凭证。</p>
-    </div>
-  </section>
+.warning{border-left:3px solid var(--amber);padding:10px 12px;background:#352918;color:#ffe0ad;border-radius:7px;line-height:1.6}
+.success{border-left:3px solid var(--green);padding:10px 12px;background:#153127;color:#c7ffe8;border-radius:7px;line-height:1.6}
+</style></head><body><main>
+<section class="panel"><h1>STPI 开发商订单审核后台</h1><div class="muted">订单查询 · 付款审核 · 自动发卡状态 · 访问凭证管理</div></section>
+<section class="panel" id="loginPanel"><h2>管理员登录</h2>
+<label>管理员邮箱</label><input id="email" type="email" autocomplete="username">
+<label>密码</label><input id="password" type="password" autocomplete="current-password">
+<button id="loginBtn">登录</button><div class="status" id="loginStatus"></div></section>
+<section class="panel hidden" id="adminPanel"><h2>订单管理与审核</h2><div id="who" class="muted"></div>
+<button id="refreshBtn">刷新订单</button><button class="secondary" id="logoutBtn">退出登录</button>
+<div class="status" id="ordersStatus"></div><div id="orders"></div></section>
+<section class="panel hidden" id="recoveryPanel"><h2>访问凭证恢复</h2>
+<div class="warning">指定订单的一次性凭证恢复额度已经使用。这里不提供再次重置，避免令现有凭证失效。凭证恢复与付款审核、发卡相互独立。</div>
+<p id="selectedOrder" class="muted"></p><button class="secondary" disabled>凭证恢复额度已使用</button></section>
 </main>
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.99.0/+esm";
+import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.99.0/+esm";
 const SUPABASE_URL="https://moortluitlpcuhqzfqky.supabase.co";
 const PUBLISHABLE_KEY="sb_publishable_DyV6nf8RVv-d-XllYdt0LQ_uJG87R_L";
-const FUNCTION_URL=SUPABASE_URL+"/functions/v1/stpi-payment-portal";
-const TARGET_ORDER="STPI-20261105-D1A684EB73";
-const sb=createClient(SUPABASE_URL,PUBLISHABLE_KEY);
-const $=id=>document.getElementById(id);
-let session=null;
-function status(id,msg){$(id).textContent=msg}
-async function api(action,extra={}){
-  const {data:{session:current}}=await sb.auth.getSession();
-  if(!current) throw new Error("登录状态已失效，请重新登录");
-  const response=await fetch(FUNCTION_URL,{method:"POST",headers:{
-    "Content-Type":"application/json","apikey":PUBLISHABLE_KEY,
-    "Authorization":"Bearer "+current.access_token
-  },body:JSON.stringify({action,...extra})});
-  const result=await response.json();
-  if(!response.ok||!result.ok) throw new Error(result.error||"请求失败");
-  return result;
+const API=SUPABASE_URL+"/functions/v1/stpi-payment-portal";
+const TARGET="STPI-20261105-D1A684EB73";
+const sb=createClient(SUPABASE_URL,PUBLISHABLE_KEY),$=id=>document.getElementById(id);
+const setStatus=(id,msg)=>$(id).textContent=msg;
+async function callApi(action,extra={}){
+ const {data:{session}}=await sb.auth.getSession();if(!session)throw Error("登录状态已失效，请重新登录");
+ const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":PUBLISHABLE_KEY,"Authorization":"Bearer "+session.access_token},body:JSON.stringify({action,...extra})});
+ const body=await res.json();if(!res.ok||!body.ok)throw Error(body.error||"请求失败");return body;
 }
-async function showAdmin(user){
-  const role=user?.app_metadata?.role;
-  if(!["developer_admin","admin"].includes(role)){
-    await sb.auth.signOut(); throw new Error("当前账号没有开发商管理员权限");
+function add(parent,tag,text,cls=""){const node=document.createElement(tag);node.textContent=text;if(cls)node.className=cls;parent.append(node);return node}
+async function enter(user){
+ const role=user?.app_metadata?.role;if(!["developer_admin","admin"].includes(role)){await sb.auth.signOut();throw Error("当前账号没有开发商管理员权限")}
+ $("loginPanel").classList.add("hidden");$("adminPanel").classList.remove("hidden");$("who").textContent="已验证管理员权限："+role;await refresh();
+}
+async function refresh(){
+ setStatus("ordersStatus","正在读取订单…");
+ try{
+  const result=await callApi("admin-list-orders"),orders=result.orders||[];$("orders").replaceChildren();
+  if(!orders.length){setStatus("ordersStatus","暂无订单");return}
+  for(const o of orders){
+   const card=document.createElement("article");card.className="order";
+   const title=document.createElement("div");add(title,"strong",o.order_no);add(title,"span",o.status,"tag");card.append(title);
+   add(card,"p",`商品：${o.product_code} · 金额：${o.currency} ${o.amount} · 支付：${o.payment_method} / ${o.payment_network||"未提供"} · 交付：${o.delivery_status||"未知"}`,"muted");
+   if(o.order_no===TARGET){
+    $("recoveryPanel").classList.remove("hidden");
+    $("selectedOrder").textContent=`目标订单：${o.order_no}｜${o.currency} ${o.amount}｜${o.payment_network||""}｜状态：${o.status}`;
+    add(card,"p",`付款凭证：${o.payer_reference?"已提交（内容隐藏）":"未提交"}；交易哈希：${o.payment_txid?"已提交":"未提交"}；付款截图：${o.payment_proof_path?"已上传":"未上传"}`,"muted");
+    if(o.status==="under_review"&&o.payment_method==="wechat"&&Number(o.amount)===5&&o.currency==="CNY"&&o.delivery_status==="not_ready"){
+     add(card,"p","请先在微信商户后台核对真实入账；只有核实到账后才可审核通过。","warning");
+     add(card,"label","审核备注（可选）");const note=add(card,"textarea","");note.placeholder="例如：已核对微信商户后台 ¥5.00 实际入账";note.maxLength=1000;
+     const approve=add(card,"button","确认到账并审核通过");
+     const reject=add(card,"button","驳回订单");reject.className="danger";
+     approve.onclick=async()=>{
+      if(!confirm("请确认微信商户后台确有该笔 ¥5.00 实际入账。继续后订单将标记为 paid 并触发自动发卡流程。此操作不可随意撤销。是否继续？"))return;
+      approve.disabled=reject.disabled=true;setStatus("ordersStatus","正在提交审核…");
+      try{const r=await callApi("review-order",{order_no:TARGET,decision:"approve",review_note:note.value.trim()});setStatus("ordersStatus","审核结果："+(r.message||"已提交") );await refresh()}
+      catch(e){setStatus("ordersStatus","审核失败："+e.message);approve.disabled=reject.disabled=false}
+     };
+     reject.onclick=async()=>{
+      if(!note.value.trim()){alert("请填写驳回原因。");return}
+      if(!confirm("确认驳回该订单？订单状态将改变。"))return;
+      approve.disabled=reject.disabled=true;
+      try{const r=await callApi("review-order",{order_no:TARGET,decision:"reject",review_note:note.value.trim()});setStatus("ordersStatus","处理结果："+(r.message||"已提交"));await refresh()}
+      catch(e){setStatus("ordersStatus","驳回失败："+e.message);approve.disabled=reject.disabled=false}
+     };
+    }else if(o.status==="paid"){
+     add(card,"p","付款已审核，请核对交付状态。","success");
+     if(o.card_code)add(card,"p","卡密："+o.card_code);
+    }else add(card,"p","当前状态不满足审核条件，没有可用审核按钮。","warning");
+   }
+   $("orders").append(card);
   }
-  session=true;$("loginPanel").classList.add("hidden");$("adminPanel").classList.remove("hidden");
-  $("who").textContent="管理员权限已验证："+role;
-  await loadOrders();
+  setStatus("ordersStatus",`已读取 ${orders.length} 笔订单。审核按钮只针对指定原订单。`);
+ }catch(e){setStatus("ordersStatus",e.message)}
 }
-async function loadOrders(){
-  status("ordersStatus","正在读取订单…");
-  try{
-    const data=await api("admin-list-orders");
-    const target=data.orders.find(o=>o.order_no===TARGET_ORDER);
-    $("orders").innerHTML="";
-    if(!data.orders.length){status("ordersStatus","暂无订单");return}
-    data.orders.forEach(o=>{
-      const el=document.createElement("div");el.className="order";
-      const title=document.createElement("strong");title.textContent=o.order_no;
-      const tag=document.createElement("span");tag.className="tag";tag.textContent=o.status;
-      const info=document.createElement("p");info.className="muted";
-      info.textContent=`产品：${o.product_code} · 金额：${o.currency} ${o.amount} · 支付：${o.payment_method} / ${o.payment_network} · 交付：${o.delivery_status}`;
-      el.append(title,tag,info);$("orders").append(el);
-    });
-    status("ordersStatus",`已加载 ${data.orders.length} 笔订单`);
-    if(target){
-      $("recoveryPanel").classList.remove("hidden");
-      $("selectedOrder").textContent=`目标订单：${target.order_no}｜${target.currency} ${target.amount}｜${target.payment_network}｜状态：${target.status}`;
-      $("resetBtn").disabled=!(target.status==="under_review"&&target.payment_method==="wechat"&&Number(target.amount)===5&&target.currency==="CNY"&&target.delivery_status==="not_ready");
-      if($("resetBtn").disabled)status("resetStatus","当前订单状态不符合凭证恢复条件，按钮已禁用。");
-    }else{
-      $("recoveryPanel").classList.add("hidden");
-      status("ordersStatus","订单列表中暂未找到指定订单。");
-    }
-  }catch(e){status("ordersStatus",e.message)}
-}
-$("loginBtn").onclick=async()=>{
-  status("loginStatus","正在登录…");
-  try{
-    const {data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
-    if(error)throw error;await showAdmin(data.user);
-  }catch(e){status("loginStatus",e.message)}
-};
-$("refreshBtn").onclick=loadOrders;
-$("logoutBtn").onclick=async()=>{await sb.auth.signOut();location.reload()};
-$("resetBtn").onclick=async()=>{
-  if(!confirm("确认重置该订单的访问凭证？旧凭证会立即失效，新凭证只显示一次。此操作不会审批或发卡。"))return;
-  $("resetBtn").disabled=true;$("secretWrap").classList.add("hidden");status("resetStatus","正在执行安全重置…");
-  try{
-    const result=await api("reset-guest-access",{order_no:TARGET_ORDER});
-    $("secretValue").textContent=result.access_token;
-    $("secretWrap").classList.remove("hidden");
-    status("resetStatus","重置成功。请立即复制并保存新凭证；不要将其发送给他人。");
-    await loadOrders();
-  }catch(e){status("resetStatus",e.message);$("resetBtn").disabled=false}
-};
-$("copyBtn").onclick=async()=>{
-  try{await navigator.clipboard.writeText($("secretValue").textContent);status("resetStatus","已复制。请妥善保存。")}
-  catch{status("resetStatus","自动复制失败，请长按凭证文本手动复制。")}
-};
-const {data:{session:existing}}=await sb.auth.getSession();
-if(existing){try{const {data:{user},error}=await sb.auth.getUser(existing.access_token);if(error)throw error;await showAdmin(user)}catch(e){status("loginStatus",e.message)}}
-</script>
-</body>
-</html>
+$("loginBtn").onclick=async()=>{setStatus("loginStatus","正在登录…");try{const {data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await enter(data.user)}catch(e){setStatus("loginStatus",e.message)}};
+$("refreshBtn").onclick=refresh;$("logoutBtn").onclick=async()=>{await sb.auth.signOut();location.reload()};
+const {data:{session}}=await sb.auth.getSession();
+if(session){try{const {data:{user},error}=await sb.auth.getUser(session.access_token);if(error)throw error;await enter(user)}catch(e){setStatus("loginStatus",e.message)}}
+</script></body></html>
