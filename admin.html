@@ -1,45 +1,161 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090d18"><title>STPI · 管理控制台</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d18">
+<title>STPI · 管理控制台 V3</title>
 <style>
 :root{color-scheme:dark;--bg:#090d18;--panel:#111a2b;--panel2:#0d1524;--line:#26344d;--txt:#edf3ff;--muted:#91a1bc;--blue:#83adff;--green:#70d6ad;--amber:#f5c779;--red:#ff8f9a;--shadow:0 18px 50px #0005}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#233b65 0,transparent 38%),radial-gradient(ellipse at 100% 0,#172949 0,transparent 30%),var(--bg);color:var(--txt);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid transparent;border-radius:11px;padding:10px 14px;background:linear-gradient(135deg,#a8c5ff,#6e9fff);color:#091326;font-weight:750;transition:.18s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}button.ghost{background:#1a2942;color:var(--txt);border-color:var(--line)}button.danger{background:#4a202d;color:#ffc5cb;border-color:#713744}button.good{background:#153c32;color:#bfffe5;border-color:#27604e}.hidden{display:none!important}.wrap{max-width:1240px;margin:auto;padding:22px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#a6c6ff,#526fa9);color:#081326;font-weight:900;font-size:18px;box-shadow:0 8px 26px #628fe944}.brand h1{font-size:18px;margin:0;letter-spacing:.02em}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;border:1px solid var(--line);padding:5px 9px;border-radius:99px;color:var(--muted)}.panel{background:linear-gradient(160deg,#141f33ed,#0f1727f2);border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:var(--shadow);margin:14px 0}.login{max-width:440px;margin:9vh auto}.eyebrow{color:var(--blue);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}.panel h2{margin:4px 0 14px;font-size:19px}.muted{color:var(--muted)}label{display:block;margin:12px 0 6px;color:#b6c3d8;font-size:12px}input,select,textarea{width:100%;background:#091222;border:1px solid #2b3b56;border-radius:10px;color:var(--txt);padding:11px 12px;outline:none}input:focus,select:focus,textarea:focus{border-color:#82aaff;box-shadow:0 0 0 3px #82aaff20}textarea{min-height:76px;resize:vertical}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.nav{display:flex;gap:8px;overflow:auto;padding:4px 0 12px}.nav button{white-space:nowrap}.nav button.active{background:#d9e6ff;color:#101a2b}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:15px}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:26px;display:block;margin-top:5px;letter-spacing:-.04em}.stat small{color:var(--muted)}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin:14px 0}.order{border:1px solid var(--line);background:#0b1423;border-radius:14px;padding:15px;margin:10px 0}.order-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.order-no{font-weight:800;word-break:break-all}.tag{display:inline-flex;border-radius:99px;padding:4px 8px;background:#1b2b45;color:#c8dcff;font-size:11px;margin:3px 4px 3px 0}.tag.green{background:#153b31;color:#aaf0d1}.tag.amber{background:#46351d;color:#ffdda0}.tag.red{background:#48232d;color:#ffc0c8}.order-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.kv{background:#111d30;border-radius:9px;padding:9px}.kv span{display:block;color:var(--muted);font-size:11px}.kv b{display:block;margin-top:2px;word-break:break-word}.note{padding:11px 13px;border-radius:10px;background:#342a1b;border:1px solid #66502d;color:#ffe1aa;margin:10px 0}.success{background:#123329;border-color:#245c49;color:#b9f8dc}.danger-note{background:#3a202a;border:1px solid #6b3544;color:#ffc5ce}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.status{white-space:pre-wrap;color:var(--muted);font-size:12px;margin-top:10px;min-height:18px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:540px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:11px 9px;font-size:12px}th{color:var(--muted);font-weight:600}.product-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.product{background:#0b1424;border:1px solid var(--line);padding:13px;border-radius:12px}.product b{display:block;font-size:15px}.product small{color:var(--muted)}.foot{color:#73829c;text-align:center;font-size:11px;margin-top:26px}.mobile-only{display:none}
- @media(max-width:760px){.wrap{padding:14px 12px 40px}.stats{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr}.order-grid{grid-template-columns:repeat(2,1fr)}.product-list{grid-template-columns:1fr}.top{align-items:flex-start}.top .pill{display:none}.panel{padding:15px}.stat strong{font-size:23px}}
-</style></head>
-<body><div class="wrap">
-<header class="top"><div class="brand"><div class="logo">S</div><div><h1>STPI 管理控制台</h1><p>SECURE OPERATIONS · ORDER & FULFILLMENT</p></div></div><span class="pill">ADMIN CONSOLE · V2</span></header>
-<section class="panel login" id="loginPanel"><div class="eyebrow">STPI / AUTHENTICATION</div><h2>管理员安全登录</h2><p class="muted">使用已获授权的管理员账号登录。系统会在服务端验证管理员角色。</p><label for="email">管理员邮箱</label><input id="email" type="email" autocomplete="username" placeholder="name@example.com"><label for="password">登录密码</label><input id="password" type="password" autocomplete="current-password" placeholder="请输入密码"><div class="actions"><button id="loginBtn" style="width:100%">登录控制台</button></div><div id="loginStatus" class="status"></div></section>
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#233b65 0,transparent 38%),radial-gradient(ellipse at 100% 0,#172949 0,transparent 30%),var(--bg);color:var(--txt);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid transparent;border-radius:11px;padding:10px 14px;background:linear-gradient(135deg,#a8c5ff,#6e9fff);color:#091326;font-weight:750;transition:.18s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}button.ghost{background:#1a2942;color:var(--txt);border-color:var(--line)}button.danger{background:#4a202d;color:#ffc5cb;border-color:#713744}button.good{background:#153c32;color:#bfffe5;border-color:#27604e}.hidden{display:none!important}.wrap{max-width:1240px;margin:auto;padding:22px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#a6c6ff,#526fa9);color:#081326;font-weight:900;font-size:18px}.brand h1{font-size:18px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;border:1px solid var(--line);padding:5px 9px;border-radius:99px;color:var(--muted)}.panel{background:linear-gradient(160deg,#141f33ed,#0f1727f2);border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:var(--shadow);margin:14px 0}.login{max-width:440px;margin:9vh auto}.eyebrow{color:var(--blue);font-size:11px;letter-spacing:.16em;font-weight:800}.panel h2{margin:4px 0 14px;font-size:19px}.muted{color:var(--muted)}label{display:block;margin:12px 0 6px;color:#b6c3d8;font-size:12px}input,select,textarea{width:100%;background:#091222;border:1px solid #2b3b56;border-radius:10px;color:var(--txt);padding:11px 12px;outline:none}input:focus,select:focus,textarea:focus{border-color:#82aaff;box-shadow:0 0 0 3px #82aaff20}textarea{min-height:76px;resize:vertical}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.nav{display:flex;gap:8px;overflow:auto;padding:4px 0 12px}.nav button{white-space:nowrap}.nav button.active{background:#d9e6ff;color:#101a2b}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:#0b1424;border:1px solid var(--line);border-radius:14px;padding:15px}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:26px;display:block;margin-top:5px}.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin:14px 0}.order{border:1px solid var(--line);background:#0b1423;border-radius:14px;padding:15px;margin:10px 0}.order-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.order-no{font-weight:800;word-break:break-all}.tag{display:inline-flex;border-radius:99px;padding:4px 8px;background:#1b2b45;color:#c8dcff;font-size:11px;margin:3px 4px 3px 0}.tag.green{background:#153b31;color:#aaf0d1}.tag.amber{background:#46351d;color:#ffdda0}.tag.red{background:#48232d;color:#ffc0c8}.order-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.kv{background:#111d30;border-radius:9px;padding:9px;min-width:0}.kv span{display:block;color:var(--muted);font-size:11px}.kv b{display:block;margin-top:2px;word-break:break-word}.note{padding:11px 13px;border-radius:10px;background:#342a1b;border:1px solid #66502d;color:#ffe1aa;margin:10px 0}.status{white-space:pre-wrap;color:var(--muted);font-size:12px;margin-top:10px;min-height:18px}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.foot{color:#73829c;text-align:center;font-size:11px;margin-top:26px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.product-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:760px){.wrap{padding:14px 12px 40px}.stats{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr}.order-grid{grid-template-columns:repeat(2,1fr)}.product-list{grid-template-columns:1fr}.top{align-items:flex-start}.top .pill{display:none}.panel{padding:15px}.stat strong{font-size:23px}}
+ </style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><div class="logo">S</div><div><h1>STPI 管理控制台</h1><p>SECURE OPERATIONS · ORDER & FULFILLMENT</p></div></div><span class="pill">ADMIN CONSOLE · V3</span></header>
+<section class="panel login" id="loginPanel"><div class="eyebrow">STPI / AUTHENTICATION</div><h2>管理员安全登录</h2><p class="muted">使用已获授权的管理员邮箱和密码登录。</p><label for="email">管理员邮箱</label><input id="email" type="email" autocomplete="username" placeholder="管理员邮箱"><label for="password">登录密码</label><input id="password" type="password" autocomplete="current-password" placeholder="请输入密码"><div class="actions"><button id="loginBtn" style="width:100%">登录控制台</button></div><div id="loginStatus" class="status" role="status"></div></section>
 <div id="app" class="hidden">
-<section class="panel"><div class="section-head"><div><div class="eyebrow">OVERVIEW</div><h2 style="margin-bottom:2px">运营总览</h2><div class="muted" id="who">管理员已登录</div></div><div class="actions" style="margin:0"><button class="ghost" id="refreshBtn">↻ 刷新数据</button><button class="ghost" id="logoutBtn">退出登录</button></div></div><div class="stats" style="margin-top:16px"><div class="stat"><span>订单总数</span><strong id="sTotal">—</strong><small>全部订单</small></div><div class="stat"><span>待审核</span><strong id="sReview">—</strong><small>等待管理员处理</small></div><div class="stat"><span>已完成付款</span><strong id="sPaid">—</strong><small>状态 paid</small></div><div class="stat"><span>交付异常</span><strong id="sIssue">—</strong><small>需要关注</small></div></div><div id="globalStatus" class="status"></div></section>
+<section class="panel"><div class="section-head"><div><div class="eyebrow">OVERVIEW</div><h2 style="margin-bottom:2px">运营总览</h2><div class="muted" id="who">管理员已登录</div></div><div class="actions" style="margin:0"><button class="ghost" id="refreshBtn">↻ 刷新数据</button><button class="ghost" id="logoutBtn">退出登录</button></div></div><div class="stats" style="margin-top:16px"><div class="stat"><span>订单总数</span><strong id="sTotal">—</strong></div><div class="stat"><span>待审核</span><strong id="sReview">—</strong></div><div class="stat"><span>已付款</span><strong id="sPaid">—</strong></div><div class="stat"><span>交付异常</span><strong id="sIssue">—</strong></div></div><div id="globalStatus" class="status"></div></section>
 <nav class="nav"><button class="active" data-tab="ordersTab">订单审核</button><button class="ghost" data-tab="inventoryTab">库存管理</button><button class="ghost" data-tab="deliveryTab">交付异常</button><button class="ghost" data-tab="guideTab">操作说明</button></nav>
-<section class="panel" id="ordersTab"><div class="section-head"><div><div class="eyebrow">ORDER REVIEW</div><h2>订单审核中心</h2></div><span class="pill" id="orderCount">0 ORDERS</span></div><div class="filters"><input id="searchInput" placeholder="搜索订单号 / 商品 / 支付方式"><select id="statusFilter"><option value="all">全部订单状态</option><option value="under_review">待审核</option><option value="paid">已付款</option><option value="rejected">已驳回</option><option value="pending">待支付</option></select><select id="deliveryFilter"><option value="all">全部交付状态</option><option value="fulfilled">已交付</option><option value="out_of_stock">库存不足</option><option value="not_ready">未交付</option></select></div><div id="ordersList"><div class="empty">正在读取订单…</div></div><div id="ordersStatus" class="status"></div></section>
-<section class="panel hidden" id="inventoryTab"><div class="eyebrow">INVENTORY</div><h2>卡密库存导入</h2><div class="note">每行填写一条卡密。导入前请确认商品类型和内容正确。系统会调用现有后端接口，不会在页面中保存服务端密钥。</div><label for="productCode">商品类型</label><select id="productCode"><option value="DAY">DAY · 日卡</option><option value="WEEK">WEEK · 周卡</option><option value="MONTH">MONTH · 月卡</option><option value="INTERNAL">INTERNAL · 内部卡</option><option value="CUSTOM">CUSTOM · 自定义</option></select><label for="cardLines">卡密内容（每行一条，最多 200 条）</label><textarea id="cardLines" placeholder="每行粘贴一条卡密"></textarea><div class="row"><div class="muted" id="cardCount">0 / 200 条</div><button id="importBtn">导入库存</button></div><div id="inventoryStatus" class="status"></div></section>
-<section class="panel hidden" id="deliveryTab"><div class="eyebrow">FULFILLMENT RECOVERY</div><h2>交付异常处理</h2><div class="note">仅对已付款且交付状态为 out_of_stock 的订单显示重试按钮。已完成交付的订单不会重复发卡。</div><div id="deliveryList"><div class="empty">暂无数据</div></div><div id="deliveryStatus" class="status"></div></section>
-<section class="panel hidden" id="guideTab"><div class="eyebrow">ADMIN GUIDE</div><h2>安全操作说明</h2><div class="note">审核通过前，必须先在实际收款渠道核对对应金额已真实到账。订单页面提交的截图或付款凭证不等于到账证明。</div><ul class="muted"><li>待审核订单：核对订单号、金额、币种、支付渠道及实际入账后再决定通过或驳回。</li><li>审核通过：后端将订单状态更新为 paid，并由现有数据库自动发卡流程处理交付。</li><li>库存导入：仅向后端提交你明确选择的商品类型和卡密行。</li><li>交付重试：仅用于 paid + out_of_stock，处理前先查看订单状态。</li><li>本页面不展示卡密明文，也不包含 service_role 或其他服务端密钥。</li></ul><div class="danger-note note">请勿仅凭用户截图直接判定收款成功。审核操作可能改变订单状态，提交前请再次核实。</div></section>
-</div><footer class="foot">STPI ADMIN CONSOLE · Secure session · Mobile ready</footer></div>
+<section class="panel" id="ordersTab"><div class="section-head"><div><div class="eyebrow">ORDER REVIEW</div><h2>订单审核中心</h2></div><span class="pill" id="orderCount">0 ORDERS</span></div><div class="filters"><input id="searchInput" placeholder="搜索订单号 / 商品 / 支付方式"><select id="statusFilter"><option value="all">全部订单状态</option><option value="under_review">待审核</option><option value="paid">已付款</option><option value="rejected">已驳回</option><option value="pending">待支付</option></select><select id="deliveryFilter"><option value="all">全部交付状态</option><option value="fulfilled">已交付</option><option value="out_of_stock">库存不足</option><option value="not_ready">未交付</option></select></div><div id="ordersList"><div class="empty">登录后读取订单</div></div><div id="ordersStatus" class="status"></div></section>
+<section class="panel hidden" id="inventoryTab"><div class="eyebrow">INVENTORY</div><h2>卡密库存导入</h2><div class="note">每行一条卡密，最多 200 条。请确认商品类型和内容无误后再导入。</div><label for="productCode">商品类型</label><select id="productCode"><option value="DAY">DAY · 日卡</option><option value="WEEK">WEEK · 周卡</option><option value="MONTH">MONTH · 月卡</option><option value="INTERNAL">INTERNAL · 内部卡</option><option value="CUSTOM">CUSTOM · 自定义</option></select><label for="cardLines">卡密内容</label><textarea id="cardLines" placeholder="每行粘贴一条卡密"></textarea><div class="row"><div class="muted" id="cardCount">0 / 200 条</div><button id="importBtn" disabled>导入库存</button></div><div id="inventoryStatus" class="status"></div></section>
+<section class="panel hidden" id="deliveryTab"><div class="eyebrow">FULFILLMENT RECOVERY</div><h2>交付异常处理</h2><div class="note">仅对已付款且 delivery_status 为 out_of_stock 的订单开放重试。</div><div id="deliveryList"><div class="empty">暂无数据</div></div><div id="deliveryStatus" class="status"></div></section>
+<section class="panel hidden" id="guideTab"><div class="eyebrow">ADMIN GUIDE</div><h2>安全操作说明</h2><div class="note">审核通过前，必须先在实际收款渠道核对订单金额已真实到账。付款截图不等于到账证明。</div><ul class="muted"><li>仅处理状态为 under_review 的订单。</li><li>审核通过会将订单标记为 paid，并触发后端自动发卡流程。</li><li>驳回订单必须填写原因。</li><li>交付重试仅适用于 paid + out_of_stock。</li><li>本页面不展示卡密明文，也不包含 service_role 密钥。</li></ul></section>
+</div><footer class="foot">STPI ADMIN CONSOLE · Secure session · Mobile ready</footer>
+</div>
 <script type="module">
-import{createClient}from"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.99.0/+esm";
-const SUPABASE_URL="https://moortluitlpcuhqzfqky.supabase.co";
-const PUBLISHABLE_KEY="sb_publishable_DyV6nf8RVv-d-XllYdt0LQ_uJG87R_L";
-const API=SUPABASE_URL+"/functions/v1/stpi-payment-portal";
-const sb=createClient(SUPABASE_URL,PUBLISHABLE_KEY);const $=id=>document.getElementById(id);let allOrders=[];
-const statusText=(id,msg)=>$(id).textContent=msg;const safe=v=>v===null||v===undefined||v===""?"—":String(v);const money=o=>`${safe(o.currency)} ${safe(o.amount)}`;
-async function api(action,extra={}){const{data:{session}}=await sb.auth.getSession();if(!session)throw Error("登录已失效，请重新登录");const res=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":PUBLISHABLE_KEY,"Authorization":"Bearer "+session.access_token},body:JSON.stringify({action,...extra})});let body;try{body=await res.json()}catch{throw Error("服务器返回内容无法解析")};if(!res.ok||body?.ok===false)throw Error(body?.error||body?.message||`请求失败（${res.status}）`);return body}
-function node(tag,txt,cls){const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;if(cls)n.className=cls;return n}function add(parent,tag,txt,cls){const n=node(tag,txt,cls);parent.append(n);return n}
-function badge(text,kind=""){return node("span",text,"tag "+kind)}
-function showTab(id){document.querySelectorAll("#ordersTab,#inventoryTab,#deliveryTab,#guideTab").forEach(p=>p.classList.toggle("hidden",p.id!==id));document.querySelectorAll(".nav button").forEach(b=>{const on=b.dataset.tab===id;b.classList.toggle("active",on);b.classList.toggle("ghost",!on)})}
-document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
-function renderStats(){const total=allOrders.length,review=allOrders.filter(o=>o.status==="under_review").length,paid=allOrders.filter(o=>o.status==="paid").length,issue=allOrders.filter(o=>o.delivery_status==="out_of_stock").length;$("sTotal").textContent=total;$ ("sReview").textContent=review;$("sPaid").textContent=paid;$("sIssue").textContent=issue}
-function renderOrders(){const q=$("searchInput").value.trim().toLowerCase(),st=$("statusFilter").value,ds=$("deliveryFilter").value;const list=allOrders.filter(o=>(st==="all"||o.status===st)&&(ds==="all"||(o.delivery_status||"not_ready")===ds)&&(!q||[o.order_no,o.product_code,o.pay
-                                                                                                                                                                                                                                                           reject){const msg=decision==="approve"?`请确认你已在收款渠道核实订单 ${o.order_no} 的 ${money(o)} 已真实到账。确认后订单将标记为 paid，并触发后端自动发卡流程。继续吗？`:`确定驳回订单 ${o.order_no}？请确保已填写驳回原因。`;if(decision==="reject"&&!note.value.trim()){alert("请填写驳回原因。");return}if(!confirm(msg))return;approve.disabled=reject.disabled=true;statusText("ordersStatus","正在提交审核操作…");try{const r=await api("review-order",{order_no:o.order_no,decision,review_note:note.value.trim()});statusText("ordersStatus",r.message||"审核操作已提交");await refresh()}catch(e){statusText("ordersStatus","操作失败："+e.message);approve.disabled=reject.disabled=false}}
-function renderDelivery(){const arr=allOrders.filter(o=>o.status==="paid"&&o.delivery_status==="out_of_stock");$("deliveryList").replaceChildren();if(!arr.length){$("deliveryList").append(node("div","当前没有符合重试条件的交付异常订单。","empty"));return}for(const o of arr){const c=node("div",undefined,"order");add(c,"div",safe(o.order_no),"order-no");add(c,"p",`${safe(o.product_code)} · ${money(o)} · ${safe(o.delivery_status)}`,"muted");const b=add(c,"button","重试自动发卡");b.onclick=async()=>{if(!confirm(`确认对 ${o.order_no} 执行交付重试？仅适用于已付款且库存不足订单。`))return;b.disabled=true;try{const r=await api("retry-fulfillment",{order_no:o.order_no});statusText("deliveryStatus",r.message||"已提交交付重试");await refresh()}catch(e){statusText("deliveryStatus","重试失败："+e.message);b.disabled=false}};$("deliveryList").append(c)}}
-async function refresh(){statusText("globalStatus","正在同步订单数据…");try{const r=await api("admin-list-orders");allOrders=Array.isArray(r.orders)?r.orders:[];renderStats();renderOrders();renderDelivery();statusText("globalStatus",`数据已更新 · ${allOrders.length} 笔订单`);statusText("ordersStatus","")}catch(e){statusText("globalStatus","读取失败："+e.message);statusText("ordersStatus",e.message)}}
-async function enter(user){const role=user?.app_metadata?.role;if(!["developer_admin","admin"].includes(role)){await sb.auth.signOut();throw Error("当前账号没有管理员权限。需要 app_metadata.role 为 developer_admin 或 admin")}$ ("loginPanel").classList.add("hidden");$("app").classList.remove("hidden");$("who").textContent=`已验证管理员权限：${role}`;await refresh()}
-$("loginBtn").onclick=async()=>{const b=$("loginBtn");b.disabled=true;statusText("loginStatus","正在验证账号…");try{const{data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await enter(data.user)}catch(e){statusText("loginStatus","登录失败："+e.message)}finally{b.disabled=false}};
-$("refreshBtn").onclick=refresh;$("logoutBtn").onclick=async()=>{await sb.auth.signOut();location.reload()};["searchInput","statusFilter","deliveryFilter"].forEach(id=>$(id).addEventListener(id==="searchInput"?"input":"change",renderOrders));
-$("cardLines").addEventListener("input",()=>{const n=$("cardLines").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).length;$("cardCount").textContent=`${n} / 200 条`;$("importBtn").disabled=n===0||n>200});
-$("importBtn").onclick=async()=>{const cards=$("cardLines").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(!cards.length||cards.length>200){alert("请填写 1–200 条卡密，每行一条。");return}if(!confirm(`确认向 ${$("productCode").value} 导入 ${cards.length} 条库存卡密？`))return;const b=$("importBtn");b.disabled=true;statusText("inventoryStatus","正在导入库存…");try{const r=await api("add-inventory",{product_code:$("productCode").value,cards});statusText("inventoryStatus",r.message||`已提交 ${cards.length} 条库存`);$("cardLines").value="";$("cardCount").textContent="0 / 200 条"}catch(e){statusText("inventoryStatus","导入失败："+e.message)}finally{b.disabled=false}};
-const{data:{session}}=await sb.auth.getSession();if(session){try{const{data:{user},error}=await sb.auth.getUser(session.access_token);if(error)throw error;await enter(user)}catch(e){statusText("loginStatus",e.message)}}
-</script></body></html>
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.99.0/+esm";
+const SUPABASE_URL = "https://moortluitlpcuhqzfqky.supabase.co";
+const PUBLISHABLE_KEY = "sb_publishable_DyV6nf8RVv-d-XllYdt0LQ_uJG87R_L";
+const API = SUPABASE_URL + "/functions/v1/stpi-payment-portal";
+const sb = createClient(SUPABASE_URL, PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
+let allOrders = [];
+const statusText = (id, msg) => { const el = $(id); if (el) el.textContent = msg || ""; };
+const safe = v => v === null || v === undefined || v === "" ? "—" : String(v);
+const money = o => `${safe(o.currency)} ${safe(o.amount)}`;
+function node(tag, text, cls) { const el = document.createElement(tag); if (text !== undefined) el.textContent = text; if (cls) el.className = cls; return el; }
+function add(parent, tag, text, cls) { const el = node(tag, text, cls); parent.append(el); return el; }
+function badge(text, kind = "") { return node("span", text, "tag " + kind); }
+function showTab(id) {
+  ["ordersTab", "inventoryTab", "deliveryTab", "guideTab"].forEach(tab => $(tab).classList.toggle("hidden", tab !== id));
+  document.querySelectorAll(".nav button").forEach(button => { const active = button.dataset.tab === id; button.classList.toggle("active", active); button.classList.toggle("ghost", !active); });
+ }
+ async function api(action, extra = {}) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) throw new Error("登录会话已失效，请重新登录");
+  const response = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json", apikey: PUBLISHABLE_KEY, Authorization: "Bearer " + session.access_token }, body: JSON.stringify({ action, ...extra }) });
+  let body;
+  try { body = await response.json(); } catch { throw new Error("服务器返回内容无法解析"); }
+  if (!response.ok || body?.ok === false) throw new Error(body?.error || body?.message || `请求失败（${response.status}）`);
+  return body;
+}
+function renderStats() {
+  $("sTotal").textContent = allOrders.length;
+  $("sReview").textContent = allOrders.filter(o => o.status === "under_review").length;
+  $("sPaid").textContent = allOrders.filter(o => o.status === "paid").length;
+  $("sIssue").textContent = allOrders.filter(o => o.delivery_status === "out_of_stock").length;
+}
+function renderOrders() {
+  const query = $("searchInput").value.trim().toLowerCase();
+  const status = $("statusFilter").value;
+  const delivery = $("deliveryFilter").value;
+  const filtered = allOrders.filter(order => {
+    const text = [order.order_no, order.product_code, order.payment_method, order.payment_network, order.status].map(v => safe(v).toLowerCase()).join(" ");
+    const deliveryStatus = order.delivery_status || "not_ready";
+    return (status === "all" || order.status === status) && (delivery === "all" || deliveryStatus === delivery) && (!query || text.includes(query));
+  });
+  $("orderCount").textContent = `${filtered.length} ORDERS`;
+  const list = $("ordersList"); list.replaceChildren();
+  if (!filtered.length) { list.append(node("div", "没有符合条件的订单。", "empty")); return; }
+  for (const order of filtered) {
+    const card = node("article", undefined, "order");
+    const top = add(card, "div", undefined, "order-top");
+    add(top, "div", safe(order.order_no), "order-no");
+    const statusKind = order.status === "paid" ? "green" : order.status === "under_review" ? "amber" : order.status === "rejected" ? "red" : "";
+    top.append(badge(safe(order.status), statusKind));
+    const grid = add(card, "div", undefined, "order-grid");
+    const fields = [["商品", order.product_code], ["金额", money(order)], ["支付方式", order.payment_method], ["支付网络", order.payment_network], ["交付状态", order.delivery_status], ["创建时间", order.created_at]];
+    for (const [label, value] of fields) { const cell = add(grid, "div", undefined, "kv"); add(cell, "span", label); add(cell, "b", safe(value)); }
+    if (order.status === "under_review") {
+      const note = add(card, "textarea"); note.placeholder = "审核备注；驳回时必须填写原因"; note.setAttribute("aria-label", "审核备注");
+      const actions = add(card, "div", undefined, "actions");
+      const approve = add(actions, "button", "核实到账并通过", "good");
+      const reject = add(actions, "button", "驳回订单", "danger");
+      const submitReview = async decision => {
+        if (decision === "reject" && !note.value.trim()) { alert("请填写驳回原因。"); note.focus(); return; }
+        const prompt = decision === "approve" ? `请确认已在实际收款渠道核实订单 ${safe(order.order_no)} 的 ${money(order)} 已真实到账。通过后将触发后端发卡流程。继续吗？` : `确定驳回订单 ${safe(order.order_no)}？`;
+        if (!confirm(prompt)) return;
+        approve.disabled = true; reject.disabled = true; statusText("ordersStatus", "正在提交审核操作…");
+        try { const result = await api("review-order", { order_no: order.order_no, decision, review_note: note.value.trim() }); statusText("ordersStatus", result.message || "审核操作已提交"); await refresh(); }
+        catch (error) { statusText("ordersStatus", "审核失败：" + error.message); approve.disabled = false; reject.disabled = false; }
+      };
+      approve.addEventListener("click", () => submitReview("approve"));
+      reject.addEventListener("click", () => submitReview("reject"));
+    }
+    list.append(card);
+  }
+}
+ function renderDelivery() {
+  const eligible = allOrders.filter(order => order.status === "paid" && order.delivery_status === "out_of_stock");
+  const list = $("deliveryList"); list.replaceChildren();
+  if (!eligible.length) { list.append(node("div", "当前没有符合重试条件的交付异常订单。", "empty")); return; }
+  for (const order of eligible) {
+    const card = add(list, "div", undefined, "order");
+    add(card, "div", safe(order.order_no), "order-no");
+    add(card, "p", `${safe(order.product_code)} · ${money(order)} · ${safe(order.delivery_status)}`, "muted");
+    const button = add(card, "button", "重试自动发卡");
+    button.addEventListener("click", async () => {
+      if (!confirm(`确认对 ${safe(order.order_no)} 执行交付重试？`)) return;
+      button.disabled = true; statusText("deliveryStatus", "正在提交重试…");
+      try { const result = await api("retry-fulfillment", { order_no: order.order_no }); statusText("deliveryStatus", result.message || "已提交交付重试"); await refresh(); }
+      catch (error) { statusText("deliveryStatus", "重试失败：" + error.message); button.disabled = false; }
+    });
+  }
+}
+async function refresh() {
+  statusText("globalStatus", "正在同步订单数据…");
+  try { const result = await api("admin-list-orders"); allOrders = Array.isArray(result.orders) ? result.orders : []; renderStats(); renderOrders(); renderDelivery(); statusText("globalStatus", `数据已更新 · ${allOrders.length} 笔订单`); statusText("ordersStatus", ""); }
+  catch (error) { statusText("globalStatus", "读取失败：" + error.message); statusText("ordersStatus", error.message); }
+}
+async function enter(user) {
+  const role = user?.app_metadata?.role;
+  if (!["developer_admin", "admin"].includes(role)) { await sb.auth.signOut(); throw new Error("当前账号没有管理员权限。需要 app_metadata.role 为 developer_admin 或 admin"); }
+  $("loginPanel").classList.add("hidden"); $("app").classList.remove("hidden"); $("who").textContent = `已验证管理员权限：${role}`;
+  await refresh();
+}
+$("loginBtn").addEventListener("click", async () => {
+  const button = $("loginBtn"); button.disabled = true; statusText("loginStatus", "正在验证账号…");
+  try {
+    const email = $("email").value.trim(); const password = $("password").value;
+    if (!email || !password) throw new Error("请填写管理员邮箱和密码");
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    await enter(data.user);
+  } catch (error) { statusText("loginStatus", "登录失败：" + (error?.message || "未知错误")); }
+  finally { button.disabled = false; }
+});
+$("password").addEventListener("keydown", event => { if (event.key === "Enter") $("loginBtn").click(); });
+$("email").addEventListener("keydown", event => { if (event.key === "Enter") $("password").focus(); });
+document.querySelectorAll(".nav button").forEach(button => button.addEventListener("click", () => showTab(button.dataset.tab)));
+$("refreshBtn").addEventListener("click", refresh);
+$("logoutBtn").addEventListener("click", async () => { await sb.auth.signOut(); location.reload(); });
+["searchInput", "statusFilter", "deliveryFilter"].forEach(id => $(id).addEventListener(id === "searchInput" ? "input" : "change", renderOrders));
+$("cardLines").addEventListener("input", () => { const count = $("cardLines").value.split(/\r?\n/).map(value => value.trim()).filter(Boolean).length; $("cardCount").textContent = `${count} / 200 条`; $("importBtn").disabled = count < 1 || count > 200; });
+$("importBtn").addEventListener("click", async () => {
+  const cards = $("cardLines").value.split(/\r?\n/).map(value => value.trim()).filter(Boolean);
+  if (!cards.length || cards.length > 200) { alert("请填写 1–200 条卡密，每行一条。"); return; }
+  if (!confirm(`确认向 ${$("productCode").value} 导入 ${cards.length} 条库存？`)) return;
+  const button = $("importBtn"); button.disabled = true; statusText("inventoryStatus", "正在导入库存…");
+  try { const result = await api("add-inventory", { product_code: $("productCode").value, cards }); statusText("inventoryStatus", result.message || `已提交 ${cards.length} 条库存`); $("cardLines").value = ""; $("cardCount").textContent = "0 / 200 条"; }
+  catch (error) { statusText("inventoryStatus", "导入失败：" + error.message); }
+  finally { button.disabled = true; }
+});
+(async () => {
+  try { const { data: { session } } = await sb.auth.getSession(); if (!session) return; const { data: { user }, error } = await sb.auth.getUser(session.access_token); if (error) throw error; await enter(user); }
+  catch (error) { statusText("loginStatus", "会话检查失败：" + (error?.message || "请重新登录")); }
+})();
+</script>
+</body>
+</html>
