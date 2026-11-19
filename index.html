@@ -9,7 +9,7 @@
 @media(max-width:760px){.hero{grid-template-columns:1fr;padding:55px 0 35px}.grid{grid-template-columns:repeat(2,1fr)}nav a:not(:last-child){display:none}}@media(max-width:520px){.grid,.features,.steps{grid-template-columns:1fr}.hero{gap:24px}.section{padding:35px 0}}
 </style></head>
 <body>
-<header class="wrap"><div class="brand"><i>S</i>STPI</div><nav><a href="#services">服务产品</a><a href="#process">服务流程</a><a href="#faq">常见问题</a><a href="#lookup">订单查询</a></nav></header>
+<a href="#faq">常见问题</a><a href="#activation">授权激活</a><a href="#lookup">订单查询</a>
 <main>
 <section class="wrap hero"><div><div class="eyebrow">DIGITAL SERVICE PLATFORM · EST. 2025</div><h1>让数字服务<br><span class="grad">更简单、更可靠。</span></h1><p class="lead">面向数字化场景的综合服务平台。清晰的服务项目、透明的订单流程，以及人工核验后的安全交付。</p><p><a class="btn primary" href="#services">探索服务项目 ↗</a> <a class="btn" href="#process">了解服务流程</a></p></div><div class="panel"><div class="orbit"><b>STPI</b></div><div class="stats"><div><strong>2025</strong><small>创立年份</small></div><div><strong>24位</strong><small>随机卡密</small></div><div><strong>人工</strong><small>付款审核</small></div></div></div></section>
 <section class="wrap section" id="services"><div class="eyebrow">OUR SERVICES</div><h2>选择适合你的服务</h2><p class="muted">每项服务独立下单。支持支付宝、微信支付人工审核及 X Layer Mainnet USDT0。</p><div class="grid">
@@ -21,6 +21,110 @@
 <article class="product"><span class="tag">SUPPORT</span><h3>服务支持</h3><p>查看订单状态、服务规则与常见问题。</p><a class="btn" href="#faq">帮助中心</a></article></div></section>
 <section class="wrap section"><div class="eyebrow">PLATFORM VALUES</div><h2>可靠流程，清晰可见</h2><div class="features"><div class="feature"><h3>◇ 订单凭证保护</h3><p>订单号与一次性访问凭证共同验证订单查询。</p></div><div class="feature"><h3>⌁ 人工付款核验</h3><p>提交交易哈希后进入审核，不会自动确认付款。</p></div><div class="feature"><h3>✧ 按需生成卡密</h3><p>管理员批准订单后，服务端自动生成唯一 24 位卡密。</p></div></div></section>
 <section class="wrap section" id="process"><div class="eyebrow">HOW IT WORKS</div><h2>三步完成服务订单</h2><div class="steps"><div class="step"><b>01</b><h3>创建订单</h3><p class="muted">保存订单号与专属访问凭证。</p></div><div class="step"><b>02</b><h3>提交付款信息</h3><p class="muted">转账后提交 X Layer 交易哈希等待审核。</p></div><div class="step"><b>03</b><h3>审核与交付</h3><p class="muted">人工核验通过后系统生成卡密。</p></div></div></section>
+<section class="wrap section" id="activation">
+  <div class="eyebrow">LICENSE ACTIVATION</div>
+  <h2>授权激活</h2>
+  <div class="feature" style="max-width:620px">
+    <p class="muted">输入 STPI 卡密，完成设备授权。</p>
+    <input id="activateKey"
+      placeholder="STPI-XXXX-XXXX-XXXX-XXXX-XXXX"
+      autocomplete="off"
+      autocapitalize="characters"
+      style="width:100%;padding:13px;background:#090e18;color:white;border:1px solid var(--line);border-radius:10px">
+    <button class="btn primary" id="activateBtn">激活授权</button>
+    <div id="activateResult" class="result" hidden></div>
+  </div>
+  // ===== STPI 卡密授权激活 =====
+async function activateLicense(){
+  const btn=$('activateBtn');
+  const box=$('activateResult');
+  const key=$('activateKey').value.trim().toUpperCase();
+
+  box.hidden=false;
+  box.className='result';
+
+  if(!/^STPI-(?:[A-F0-9]{4}-){5}[A-F0-9]{4}$/.test(key)){
+    box.className='result error';
+    box.textContent='卡密格式不正确，请检查后重试。';
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='正在验证…';
+  box.textContent='正在连接授权服务…';
+
+  try{
+    let deviceId=localStorage.getItem('stpi_device_id');
+
+    if(!deviceId){
+      deviceId=crypto.randomUUID
+        ?crypto.randomUUID()
+        :Array.from(
+          crypto.getRandomValues(new Uint8Array(24)),
+          x=>x.toString(16).padStart(2,'0')
+        ).join('');
+
+      localStorage.setItem('stpi_device_id',deviceId);
+    }
+
+    const r=await fetch(
+      'https://moortluitlpcuhqzfqky.supabase.co/functions/v1/stpi-license-activation',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':KEY
+        },
+        body:JSON.stringify({
+          action:'activate',
+          key:key,
+          device_id:deviceId
+        })
+      }
+    );
+
+    const d=await r.json().catch(()=>({code:'BAD_RESPONSE'}));
+
+    if(!r.ok||d.ok!==true){
+      const messages={
+        INVALID_INPUT:'卡密格式或设备信息无效。',
+        BAD_RESPONSE:'授权服务器响应异常。',
+        SERVICE_ERROR:'授权服务暂时异常，请稍后重试。'
+      };
+
+      throw Error(
+        messages[d.code]||
+        ('授权未通过：'+(d.code||d.error||'请核对卡密状态'))
+      );
+    }
+
+    const expiry=d.expires_at
+      ?new Date(d.expires_at).toLocaleString('zh-CN')
+      :'服务端未返回有效期';
+
+    box.textContent=
+      '授权激活成功！\n'+
+      '套餐：'+(d.plan||'已授权')+'\n'+
+      '有效期至：'+expiry+'\n'+
+      '设备已完成绑定。';
+
+  }catch(e){
+    box.className='result error';
+    box.textContent=e.message||'激活失败，请稍后重试。';
+
+  }finally{
+    btn.disabled=false;
+    btn.textContent='激活授权';
+  }
+}
+
+$('activateBtn').onclick=activateLicense;
+
+$('activateKey').addEventListener('keydown',e=>{
+  if(e.key==='Enter')activateLicense();
+});
+// ===== STPI 卡密授权激活结束 =====
+</section>
 <section class="wrap section" id="lookup"><div class="eyebrow">ORDER CENTER</div><h2>订单查询</h2><div class="feature" style="max-width:620px"><label>订单编号<input id="lookupNo" placeholder="输入订单编号"></label><label>订单访问凭证<input id="lookupToken" placeholder="输入创建订单时返回的凭证"></label><button class="btn primary" id="lookupBtn">查询订单状态</button><div id="lookupResult" class="result" hidden></div></div></section>
 <section class="wrap section faq" id="faq"><div class="eyebrow">HELP CENTER</div><h2>常见问题</h2><details><summary>提交交易哈希后会立即发卡吗？</summary><p>不会。订单进入人工审核，只有管理员核验付款并批准后才触发卡密生成。</p></details><details><summary>访问凭证丢失怎么办？</summary><p>凭证创建时只返回一次，请立即保存。目前不提供凭证找回功能。</p></details><details><summary>支持哪些付款方式？</summary><p>支持支付宝扫码人工审核及 X Layer Mainnet USDT0。微信暂未启用。支付宝付款需提交凭证编号，到账以商户实际收款记录为准。</p></details><details><summary>卡密什么时候生成？</summary><p>管理员人工确认付款并批准订单后，数据库自动生成 24 位大写十六进制随机卡密。</p></details></section>
 </main><footer class="wrap">© 2025–2026 STPI · 开发商：倾征 · CEO：倾征 · 前端版本 1.0</footer>
