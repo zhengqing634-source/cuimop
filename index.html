@@ -128,6 +128,66 @@ $('activateBtn').onclick=activateLicense;
 $('activateKey').addEventListener('keydown',e=>{
   if(e.key==='Enter')activateLicense();
 });
+// 页面刷新后，自动恢复设备授权状态
+async function restoreLicenseStatus(){
+  const deviceId=localStorage.getItem('stpi_device_id');
+  if(!deviceId)return;
+
+  const box=$('activateResult');
+  box.hidden=false;
+  box.className='result';
+  box.textContent='正在检查本设备授权状态…';
+
+  try{
+    const r=await fetch(
+      'https://moortluitlpcuhqzfqky.supabase.co/functions/v1/stpi-license-activation',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'apikey':'sb_publishable_DyV6nf8RVv-d-XllYdt0LQ_uJG87R_L'
+        },
+        body:JSON.stringify({
+          action:'status',
+          device_id:deviceId
+        })
+      }
+    );
+
+    const d=await r.json().catch(()=>({code:'BAD_RESPONSE'}));
+
+    if(r.ok&&d.ok===true){
+      const expiry=d.expires_at
+        ?new Date(d.expires_at).toLocaleString('zh-CN')
+        :'服务端未返回有效期';
+
+      box.textContent=
+        '已检测到有效授权。\n'+
+        '套餐：'+(d.plan||'已授权')+'\n'+
+        '有效期至：'+expiry+'\n'+
+        '本设备已绑定。';
+
+    }else if(d.code==='NOT_ACTIVATED'){
+      box.hidden=true;
+
+    }else if(d.code==='EXPIRED'||d.code==='REVOKED'){
+      box.className='result error';
+      box.textContent=d.code==='EXPIRED'
+        ?'授权已到期。'
+        :'授权已失效或被撤销。';
+
+    }else{
+      box.className='result error';
+      box.textContent='暂时无法核验授权状态，请稍后刷新重试。';
+    }
+
+  }catch(e){
+    box.className='result error';
+    box.textContent='授权状态检查失败，请检查网络后刷新。';
+  }
+}
+
+restoreLicenseStatus();
 // ===== STPI 卡密授权激活结束 =====
 async function api(payload){const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY},body:JSON.stringify(payload)});const d=await r.json().catch(()=>({error:'服务器响应异常'}));if(!r.ok||d.error)throw Error(d.error||'请求失败');return d}
 function result(msg,bad=false){$('out').hidden=false;$('out').className='result'+(bad?' error':'');$('out').textContent=msg}
