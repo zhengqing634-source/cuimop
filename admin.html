@@ -73,76 +73,7 @@
   </div>
   <div id="licenseStatus" class="status"></div>
  </section>
-<section class="panel hidden" id="licensesTab">
-  <div class="section-head">
-    <div>
-      <div class="eyebrow">LICENSE MANAGEMENT</div>
-      <h2>卡密授权管理</h2>
-    </div>
-    <span class="pill">STPI LICENSE CENTER</span>
-  </div>
 
-  <div class="note">
-    管理员专用授权管理中心。封禁操作会影响对应卡密的后续验证。
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <span>授权总数</span>
-      <strong id="licenseTotal">—</strong>
-    </div>
-    <div class="stat">
-      <span>正常授权</span>
-      <strong id="licenseActive">—</strong>
-    </div>
-    <div class="stat">
-      <span>已封禁</span>
-      <strong id="licenseRevoked">—</strong>
-    </div>
-    <div class="stat">
-      <span>待核验</span>
-      <strong id="licensePending">—</strong>
-    </div>
-  </div>
-
-  <h2 style="margin-top:22px">创建测试卡密</h2>
-
-  <label for="licensePlan">选择套餐</label>
-  <select id="licensePlan">
-    <option value="DAY">DAY · 日卡</option>
-    <option value="WEEK">WEEK · 周卡</option>
-    <option value="MONTH">MONTH · 月卡</option>
-  </select>
-
-  <div class="actions">
-    <button id="createLicenseBtn">创建测试卡密</button>
-    <button class="ghost" id="licenseRefreshBtn">刷新授权记录</button>
-  </div>
-
-  <div id="newLicenseBox" class="order hidden">
-    <div class="eyebrow">NEW TEST LICENSE</div>
-    <div id="newLicenseKey"
-      style="font-size:17px;word-break:break-all;margin:12px 0"></div>
-    <button class="good" id="copyLicenseBtn">复制卡密</button>
-  </div>
-
-  <h2 style="margin-top:22px">授权记录</h2>
-
-  <div class="filters">
-    <input id="licenseSearch" placeholder="搜索卡密ID或套餐">
-    <select id="licenseStatusFilter">
-      <option value="all">全部状态</option>
-      <option value="active">正常</option>
-      <option value="revoked">已封禁</option>
-    </select>
-  </div>
-
-  <div id="licensesList">
-    <div class="empty">等待连接授权服务</div>
-  </div>
-
-  <div id="licenseStatus" class="status"></div>
-</section>
 
 <section class="panel hidden" id="guideTab"><div class="eyebrow">ADMIN GUIDE</div><h2>安全操作说明</h2><div class="note">审核通过前，必须先在实际收款渠道核对订单金额已真实到账。付款截图不等于到账证明。</div><ul class="muted"><li>仅处理状态为 under_review 的订单。</li><li>审核通过会将订单标记为 paid，并触发后端自动发卡流程。</li><li>驳回订单必须填写原因。</li><li>交付重试仅适用于 paid + out_of_stock。</li><li>本页面不展示卡密明文，也不包含 service_role 密钥。</li></ul></section>
 </div><footer class="foot">STPI ADMIN CONSOLE · Secure session · Mobile ready</footer>
