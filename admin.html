@@ -17,7 +17,13 @@
 <section class="panel login" id="loginPanel"><div class="eyebrow">STPI / AUTHENTICATION</div><h2>管理员安全登录</h2><p class="muted">使用已获授权的管理员邮箱和密码登录。</p><label for="email">管理员邮箱</label><input id="email" type="email" autocomplete="username" placeholder="管理员邮箱"><label for="password">登录密码</label><input id="password" type="password" autocomplete="current-password" placeholder="请输入密码"><div class="actions"><button id="loginBtn" style="width:100%">登录控制台</button></div><div id="loginStatus" class="status" role="status"></div></section>
 <div id="app" class="hidden">
 <section class="panel"><div class="section-head"><div><div class="eyebrow">OVERVIEW</div><h2 style="margin-bottom:2px">运营总览</h2><div class="muted" id="who">管理员已登录</div></div><div class="actions" style="margin:0"><button class="ghost" id="refreshBtn">↻ 刷新数据</button><button class="ghost" id="logoutBtn">退出登录</button></div></div><div class="stats" style="margin-top:16px"><div class="stat"><span>订单总数</span><strong id="sTotal">—</strong></div><div class="stat"><span>待审核</span><strong id="sReview">—</strong></div><div class="stat"><span>已付款</span><strong id="sPaid">—</strong></div><div class="stat"><span>交付异常</span><strong id="sIssue">—</strong></div></div><div id="globalStatus" class="status"></div></section>
-<nav class="nav"><button class="active" data-tab="ordersTab">订单审核</button><button class="ghost" data-tab="inventoryTab">库存管理</button><button class="ghost" data-tab="deliveryTab">交付异常</button><button class="ghost" data-tab="guideTab">操作说明</button></nav>
+<nav class="nav">
+<button class="active" data-tab="ordersTab">订单审核</button>
+<button class="ghost" data-tab="inventoryTab">库存管理</button>
+<button class="ghost" data-tab="deliveryTab">交付异常</button>
+<button class="ghost" data-tab="licensesTab">卡密授权</button>
+<button class="ghost" data-tab="guideTab">操作说明</button>
+</nav>
 <section class="panel" id="ordersTab"><div class="section-head"><div><div class="eyebrow">ORDER REVIEW</div><h2>订单审核中心</h2></div><span class="pill" id="orderCount">0 ORDERS</span></div><div class="filters"><input id="searchInput" placeholder="搜索订单号 / 商品 / 支付方式"><select id="statusFilter"><option value="all">全部订单状态</option><option value="under_review">待审核</option><option value="paid">已付款</option><option value="rejected">已驳回</option><option value="pending">待支付</option></select><select id="deliveryFilter"><option value="all">全部交付状态</option><option value="fulfilled">已交付</option><option value="out_of_stock">库存不足</option><option value="not_ready">未交付</option></select></div><div id="ordersList"><div class="empty">登录后读取订单</div></div><div id="ordersStatus" class="status"></div></section>
 <section class="panel hidden" id="inventoryTab"><div class="eyebrow">INVENTORY</div><h2>卡密库存导入</h2><div class="note">每行一条卡密，最多 200 条。请确认商品类型和内容无误后再导入。</div><label for="productCode">商品类型</label><select id="productCode"><option value="DAY">DAY · 日卡</option><option value="WEEK">WEEK · 周卡</option><option value="MONTH">MONTH · 月卡</option><option value="INTERNAL">INTERNAL · 内部卡</option><option value="CUSTOM">CUSTOM · 自定义</option></select><label for="cardLines">卡密内容</label><textarea id="cardLines" placeholder="每行粘贴一条卡密"></textarea><div class="row"><div class="muted" id="cardCount">0 / 200 条</div><button id="importBtn" disabled>导入库存</button></div><div id="inventoryStatus" class="status"></div></section>
 <section class="panel hidden" id="deliveryTab"><div class="eyebrow">FULFILLMENT RECOVERY</div><h2>交付异常处理</h2><div class="note">仅对已付款且 delivery_status 为 out_of_stock 的订单开放重试。</div><div id="deliveryList"><div class="empty">暂无数据</div></div><div id="deliveryStatus" class="status"></div></section>
@@ -39,7 +45,7 @@ function node(tag, text, cls) { const el = document.createElement(tag); if (text
 function add(parent, tag, text, cls) { const el = node(tag, text, cls); parent.append(el); return el; }
 function badge(text, kind = "") { return node("span", text, "tag " + kind); }
 function showTab(id) {
-  ["ordersTab", "inventoryTab", "deliveryTab", "guideTab"].forEach(tab => $(tab).classList.toggle("hidden", tab !== id));
+  ["ordersTab", "inventoryTab", "deliveryTab", "licensesTab", "guideTab"].forEach(tab => $(tab).classList.toggle("hidden", tab !== id));
   document.querySelectorAll(".nav button").forEach(button => { const active = button.dataset.tab === id; button.classList.toggle("active", active); button.classList.toggle("ghost", !active); });
  }
  async function api(action, extra = {}) {
@@ -114,6 +120,132 @@ function renderOrders() {
     });
   }
 }
+ 
+let allLicenses = [];
+
+async function licenseApi(action, extra = {}) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) throw new Error("管理员登录已失效");
+
+  const response = await fetch(
+    SUPABASE_URL + "/functions/v1/stpi-license-activation",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: PUBLISHABLE_KEY,
+        Authorization: "Bearer " + session.access_token
+      },
+      body: JSON.stringify({ action, ...extra })
+    }
+  );
+
+  const result = await response.json();
+  if (!response.ok || result.ok === false) {
+    throw new Error(result.error || result.code || "请求失败");
+  }
+  return result;
+}
+
+function renderLicenses() {
+  const q = $("licenseSearch").value.trim().toLowerCase();
+  const status = $("licenseStatusFilter").value;
+  const plan = $("licensePlanFilter").value;
+
+  const rows = allLicenses.filter(x =>
+    (status === "all" || x.status === status) &&
+    (plan === "all" || x.plan === plan) &&
+    (!q || (x.id + " " + x.plan).toLowerCase().includes(q))
+  );
+
+  const list = $("licensesList");
+  list.replaceChildren();
+
+  if (!rows.length) {
+    list.append(node("div", "暂无符合条件的授权记录", "empty"));
+    return;
+  }
+
+  for (const item of rows) {
+    const card = add(list, "article", undefined, "order");
+    const top = add(card, "div", undefined, "order-top");
+
+    add(top, "div", item.plan + " · " + item.id, "order-no");
+    top.append(badge(
+      item.status,
+      item.status === "active" ? "green" : "red"
+    ));
+
+    const grid = add(card, "div", undefined, "order-grid");
+
+    for (const [label, value] of [
+      ["创建时间", item.created_at],
+      ["激活时间", item.activated_at],
+      ["到期时间", item.expires_at],
+      ["封禁时间", item.revoked_at]
+    ]) {
+      const cell = add(grid, "div", undefined, "kv");
+      add(cell, "span", label);
+      add(cell, "b", safe(value));
+    }
+
+    if (item.status === "active") {
+      const actions = add(card, "div", undefined, "actions");
+
+      const revoke = add(actions, "button", "封禁卡密", "danger");
+      revoke.addEventListener("click", async () => {
+        if (!confirm("确认封禁该测试卡密？")) return;
+        revoke.disabled = true;
+
+        try {
+          await licenseApi("admin-revoke", {
+            license_id: item.id
+          });
+          statusText("licenseStatus", "封禁成功");
+          await loadLicenses();
+        } catch (e) {
+          statusText("licenseStatus", "封禁失败：" + e.message);
+          revoke.disabled = false;
+        }
+      });
+
+      if (item.activated_at) {
+        const unbind = add(actions, "button", "解绑设备", "ghost");
+        unbind.addEventListener("click", async () => {
+          if (!confirm("确认解绑此设备？")) return;
+          unbind.disabled = true;
+
+          try {
+            await licenseApi("admin-unbind", {
+              license_id: item.id
+            });
+            statusText("licenseStatus", "设备解绑成功");
+            await loadLicenses();
+          } catch (e) {
+            statusText("licenseStatus", "解绑失败：" + e.message);
+            unbind.disabled = false;
+          }
+        });
+      }
+    }
+
+    list.append(card);
+  }
+}
+
+async function loadLicenses() {
+  statusText("licenseStatus", "正在读取授权记录…");
+
+  try {
+    const result = await licenseApi("admin-list");
+    allLicenses = result.licenses || [];
+    renderLicenses();
+    statusText("licenseStatus", "授权记录同步成功");
+  } catch (e) {
+    statusText("licenseStatus", "读取失败：" + e.message);
+  }
+}
+
 async function refresh() {
   statusText("globalStatus", "正在同步订单数据…");
   try { const result = await api("admin-list-orders"); allOrders = Array.isArray(result.orders) ? result.orders : []; renderStats(); renderOrders(); renderDelivery(); statusText("globalStatus", `数据已更新 · ${allOrders.length} 笔订单`); statusText("ordersStatus", ""); }
@@ -140,7 +272,60 @@ $("password").addEventListener("keydown", event => { if (event.key === "Enter") 
 $("email").addEventListener("keydown", event => { if (event.key === "Enter") $("password").focus(); });
 document.querySelectorAll(".nav button").forEach(button => button.addEventListener("click", () => showTab(button.dataset.tab)));
 $("refreshBtn").addEventListener("click", refresh);
-$("logoutBtn").addEventListener("click", async () => { await sb.auth.signOut(); location.reload(); });
+
+$("licenseRefreshBtn").addEventListener("click", loadLicenses);
+
+$("createLicenseBtn").addEventListener("click", async () => {
+  const button = $("createLicenseBtn");
+  button.disabled = true;
+
+  try {
+    statusText("licenseStatus", "正在创建测试卡密…");
+
+    const result = await licenseApi("admin-create", {
+      plan: $("licensePlan").value
+    });
+
+    if (!result.key) throw new Error("服务器没有返回卡密");
+
+    $("newLicenseKey").textContent = result.key;
+    $("newLicenseBox").classList.remove("hidden");
+
+    statusText("licenseStatus", "创建成功，请立即复制保存");
+    await loadLicenses();
+
+  } catch (e) {
+    statusText("licenseStatus", "创建失败：" + e.message);
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$("copyLicenseBtn").addEventListener("click", async () => {
+  const key = $("newLicenseKey").textContent;
+
+  try {
+    await navigator.clipboard.writeText(key);
+    statusText("licenseStatus", "卡密复制成功");
+  } catch {
+    statusText("licenseStatus", "请长按卡密文本手动复制");
+  }
+});
+
+$("hideLicenseBtn").addEventListener("click", () => {
+  $("newLicenseKey").textContent = "";
+  $("newLicenseBox").classList.add("hidden");
+});
+
+["licenseSearch", "licenseStatusFilter", "licensePlanFilter"]
+.forEach(id => {
+  $(id).addEventListener(
+    id === "licenseSearch" ? "input" : "change",
+    renderLicenses
+  );
+});
+
+ $("logoutBtn").addEventListener("click", async () => { await sb.auth.signOut(); location.reload(); });
 ["searchInput", "statusFilter", "deliveryFilter"].forEach(id => $(id).addEventListener(id === "searchInput" ? "input" : "change", renderOrders));
 $("cardLines").addEventListener("input", () => { const count = $("cardLines").value.split(/\r?\n/).map(value => value.trim()).filter(Boolean).length; $("cardCount").textContent = `${count} / 200 条`; $("importBtn").disabled = count < 1 || count > 200; });
 $("importBtn").addEventListener("click", async () => {
